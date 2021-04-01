@@ -4,7 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build:dev": "ng build",
+    "build:prod": "ng build --prod",
+    "live:prod": "npm run build:prod && serve -s dist/price-checker",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -19,6 +21,7 @@
     "@angular/platform-browser": "~11.2.7",
     "@angular/platform-browser-dynamic": "~11.2.7",
     "@angular/router": "~11.2.7",
+    "@angular/service-worker": "~11.2.7",
     "@taiga-ui/addon-mobile": "^2.7.0",
     "@taiga-ui/cdk": "^2.7.0",
     "@taiga-ui/core": "^2.7.0",
@@ -44,6 +47,7 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
     "protractor": "~7.0.0",
+    "serve": "^11.3.2",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~4.1.5"
