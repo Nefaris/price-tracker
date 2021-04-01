@@ -6,13 +6,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {
   iconsPathFactory,
-  TUI_ICONS_PATH, TuiButtonModule, TuiLinkModule,
-  TuiModeModule,
-  TuiNotificationsModule,
+  TUI_ICONS_PATH,
   TuiRootModule,
-  TuiThemeNightModule
 } from '@taiga-ui/core';
-import { TuiAvatarModule, TuiIslandModule } from '@taiga-ui/kit';
+import { SharedModule } from './shared/shared.module';
 
 
 @NgModule({
@@ -24,11 +21,7 @@ import { TuiAvatarModule, TuiIslandModule } from '@taiga-ui/kit';
     AppRoutingModule,
     BrowserAnimationsModule,
     TuiRootModule,
-    TuiNotificationsModule,
-    TuiIslandModule,
-    TuiButtonModule,
-    TuiLinkModule,
-    TuiAvatarModule
+    SharedModule
   ],
   providers: [
     {provide: TUI_ICONS_PATH, useValue: iconsPathFactory('assets/taiga-ui/icons/')}
