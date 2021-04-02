@@ -1,23 +1,7 @@
 <tui-root>
   <ng-container ngProjectAs="tuiOverDialogs"></ng-container>
   <ng-container ngProjectAs="tuiOverNotifications"></ng-container>
-  <ng-container ngProjectAs="tuiOverPortals"></ng-container>
   <ng-container ngProjectAs="tuiOverHints"></ng-container>
 
-  <app-navbar></app-navbar>
-
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <button tuiButton>Enable notifications</button>
-      </div>
-    </div>
-  </div>
-
-<!--  <button (click)="permitToNotify()">-->
-<!--    Click button to Click Notifiy-->
-<!--  </button>-->
-  <br/>
-
-  Device token: {{displayToken}}
+  <router-outlet></router-outlet>
 </tui-root>
