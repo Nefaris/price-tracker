@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
 import { AngularFireMessaging } from '@angular/fire/messaging';
 import { SwPush } from '@angular/service-worker';
@@ -6,15 +6,18 @@ import { fromPromise } from 'rxjs/internal-compatibility';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../../../../shared/components/base.component';
 import { environment } from '../../../../../environments/environment';
+import { AuthService } from '../../../../core/services/auth.service';
 
 
 @Component({
   selector: 'app-dashboard-page',
   templateUrl: './dashboard-page.component.html',
-  styleUrls: ['./dashboard-page.component.scss']
+  styleUrls: ['./dashboard-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardPageComponent extends BaseComponent implements OnInit {
   constructor(
+    public readonly auth: AuthService,
     private readonly notifications: TuiNotificationsService,
     private readonly fireMessaging: AngularFireMessaging,
     private readonly swPush: SwPush
