@@ -6,11 +6,12 @@ import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import firebase from 'firebase';
 import User = firebase.User;
+import { AppUser } from '../../shared/interfaces/app-user.interface';
 
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
-  public user: Observable<any>;
+  public user: Observable<AppUser>;
 
   constructor(
     private readonly fireAuth: AngularFireAuth,
@@ -20,7 +21,7 @@ export class AuthService {
     this.user = this.fireAuth.authState.pipe(
       switchMap((user: User | null) => {
         if (user) {
-          return this.firestore.doc<User>(`users/${user.uid}`).valueChanges();
+          return this.firestore.doc<AppUser>(`users/${user.uid}`).valueChanges();
         } else {
           return of(null);
         }
@@ -28,20 +29,12 @@ export class AuthService {
     );
   }
 
-  public async signInWithEmail(email: string, password: string): Promise<void> {
-    const credentials = await this.fireAuth.signInWithEmailAndPassword(email, password);
-    return this.updateUserData(credentials.user);
+  public async signInWithEmail(email: string, password: string): Promise<any> {
+    return await this.fireAuth.signInWithEmailAndPassword(email, password);
   }
 
   public async signOut(): Promise<boolean> {
     await this.fireAuth.signOut();
     return this.router.navigate(['/']);
-  }
-
-  private updateUserData({uid, email}: User): Promise<void> {
-    const userRef: AngularFirestoreDocument<User> = this.firestore.doc(`users/${uid}`);
-    const data = {uid, email} as any;
-
-    return userRef.set(data, {merge: true});
   }
 }

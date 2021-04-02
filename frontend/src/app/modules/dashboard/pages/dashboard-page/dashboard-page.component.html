@@ -1,4 +1,16 @@
 <div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-12">
+      <ng-container *ngIf="(auth.user | async) as user">
+        <ng-container *ngFor="let token of user.notificationTokens">
+          <div style="word-break: break-all">
+            {{ token }}
+          </div>
+          <hr>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
   <div class="row">
     <div class="col-12 justify-content-center">
       <button
