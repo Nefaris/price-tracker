@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "lotier-1c4bd": {
+      "hosting": {
+        "price-checker": [
+          "lotier-1c4bd"
+        ]
+      }
+    }
+  }
+}
