@@ -1,1 +1,35 @@
-<p>login-page works!</p>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-5">
+      <form class="d-flex flex-column" [formGroup]="loginForm" (submit)="onLoginFormSubmit()">
+        <div class="mb-2">
+          <tui-input formControlName="email">
+            E-mail
+          </tui-input>
+          <tui-field-error
+            formControlName="email"
+          ></tui-field-error>
+        </div>
+
+        <div class="mb-3">
+          <tui-input-password formControlName="password">
+            Password
+          </tui-input-password>
+          <tui-field-error
+            formControlName="password"
+          ></tui-field-error>
+        </div>
+
+        <button
+          tuiButton
+          appearance="outline"
+          type="submit"
+          [showLoader]="isRequestPending"
+          [disabled]="loginForm.invalid"
+        >
+          Login
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

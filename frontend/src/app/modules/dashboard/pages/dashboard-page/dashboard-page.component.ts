@@ -1,10 +1,11 @@
-import { Component, isDevMode, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
 import { AngularFireMessaging } from '@angular/fire/messaging';
 import { SwPush } from '@angular/service-worker';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../../../../shared/components/base.component';
+import { environment } from '../../../../../environments/environment';
 
 
 @Component({
@@ -22,7 +23,9 @@ export class DashboardPageComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    !isDevMode() && this.initCloudNotifications();
+    if (environment.production) {
+      this.initCloudNotifications();
+    }
   }
 
   private initCloudNotifications(): void {
