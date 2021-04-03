@@ -10,7 +10,8 @@ const scrapeItem = async (axios: AxiosInstance, url: string): Promise<Item> => {
     const price = $(`.${priceButtonClass}`).text();
     const cta = $(`.${ctaButtonClass}`).text();
     const available = cta !== unavailiableText;
-    return { price, available };
+    const img = $(".sc-1e853jq-4 img").attr('src');
+    return { price, available, img };
 }
 
 export default scrapeItem;
