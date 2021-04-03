@@ -5,7 +5,8 @@ import axios from 'axios';
 import scrapeItem from './functions/scrapeItem';
 import getUrlsWithTokens from './functions/getUrlsWithTokens';
 import * as admin from 'firebase-admin';
-import { Item } from './types/item';
+import { Item } from './types';
+import { sendEmails } from './functions/email';
 const serviceAccount = require("../serviceAccountKey.json");
 const axiosInstance = axios.create();
 const app = express();
@@ -17,12 +18,12 @@ admin.initializeApp({
 export const firestore = admin.firestore();
 export const messaging = admin.messaging();
 
-cron.schedule('* * * * *', function () {
-    console.log('running a task every minute');
-    cronJob();
-});
+// cron.schedule('* * * * *', function () {
+//     console.log('running a task every minute');
+//     cronJob();
+// });
 
-app.listen(3000);
+// app.listen(3000);
 
 
 const cronJob = async () => {
@@ -31,13 +32,15 @@ const cronJob = async () => {
     console.log(allTrackedUrls, scrapedItems);
 
     for (const url in allTrackedUrls) {
-        const tokens = allTrackedUrls[url];
+        const { pushTokens, emails } = allTrackedUrls[url];
         const item = scrapedItems.find(item => item.url === url);
 
         if (!item.available) continue;
 
+        sendEmails(emails, `Cena: ${item.price} <img src="${item.img}" />`)
+
         const message = {
-            tokens,
+            tokens: pushTokens,
             data: {
                 "title": "Dostępny przedmiot!",
                 "body": `Cena: ${item.price}`,
