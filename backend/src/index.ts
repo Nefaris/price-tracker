@@ -1,43 +1,59 @@
 require('dotenv').config()
+const cron = require('node-cron');
+const express = require('express');
 import axios from 'axios';
 import scrapeItem from './functions/scrapeItem';
+import getUrlsWithTokens from './functions/getUrlsWithTokens';
 import * as admin from 'firebase-admin';
+import { Item } from './types/item';
 const serviceAccount = require("../serviceAccountKey.json");
 const axiosInstance = axios.create();
+const app = express();
+
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
 
 export const firestore = admin.firestore();
-const messaging = admin.messaging();
+export const messaging = admin.messaging();
 
-// Example unavailable item
-const url = "https://www.x-kom.pl/p/400625-dysk-ssd-crucial-500gb-25-sata-ssd-mx500.html";
+cron.schedule('* * * * *', function () {
+    console.log('running a task every minute');
+    cronJob();
+});
 
-const main = async () => {
-    const item = await scrapeItem(axiosInstance, url)
-    const snap = await firestore.collection("users").get();
-    const tokens = await snap.docs.map(doc => doc.data().notificationTokens).flat();
-    console.log(item);
+app.listen(3000);
 
-    const message = {
-        data: {
-            "title": "Dostępny przedmiot!",
-            "body": `Cena: ${item.price}`,
-            "click_action": url,
-            "icon": item.img,
-            "image": item.img,
-        },
-        tokens
-    };
 
-    messaging.sendMulticast(message)
-        .then((response) => {
-            console.log(response);
-            if (response.failureCount > 0) {
-                console.log("Failiures count: ", response.failureCount);
+const cronJob = async () => {
+    const allTrackedUrls = await getUrlsWithTokens();
+    const scrapedItems: Item[] = await Promise.all(Object.keys(allTrackedUrls).map((url) => scrapeItem(axiosInstance, url)));
+    console.log(allTrackedUrls, scrapedItems);
+
+    for (const url in allTrackedUrls) {
+        const tokens = allTrackedUrls[url];
+        const item = scrapedItems.find(item => item.url === url);
+
+        if (!item.available) continue;
+
+        const message = {
+            tokens,
+            data: {
+                "title": "Dostępny przedmiot!",
+                "body": `Cena: ${item.price}`,
+                "click_action": url,
+                "icon": item.img,
+                "image": item.img,
             }
-        });
-}
+        };
 
-main();
+        messaging.sendMulticast(message)
+            .then((response) => {
+                console.log(response);
+                if (response.failureCount > 0) {
+                    console.log("Failiures count: ", response.failureCount);
+                }
+            });
+    }
+}
+cronJob();
