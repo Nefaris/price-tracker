@@ -52,7 +52,6 @@ export class DashboardPageComponent extends BaseComponent implements OnInit {
     this.fireMessaging.onMessage((payload: any) => {
       navigator.serviceWorker.getRegistration().then((registration: ServiceWorkerRegistration) => {
         const {title, body, icon} = payload.data;
-        console.log(payload);
         registration.showNotification(title, payload.data);
         this.notifications.show(body, {
           label: title,

@@ -10,7 +10,7 @@ import {
 import {
   TuiAvatarModule,
   TuiFieldErrorModule,
-  TuiInputModule,
+  TuiInputModule, TuiInputNumberModule,
   TuiInputPasswordModule,
   TuiIslandModule,
   TuiTabsModule,
@@ -38,7 +38,8 @@ const SHARED_MODULES = [
   TuiToggleModule,
   TuiTabsModule,
   TuiSvgModule,
-  TuiLabelModule
+  TuiLabelModule,
+  TuiInputNumberModule
 ];
 
 @NgModule({

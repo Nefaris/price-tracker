@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../../../../../../shared/components/base.component';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { take, takeUntil } from 'rxjs/operators';
 import { AppUser } from '../../../../../../shared/interfaces/app-user.interface';
 import { AuthService } from '../../../../../../core/services/auth.service';
@@ -22,6 +22,10 @@ export class SettingsPageComponent extends BaseComponent implements OnInit {
     notificationsMessenger: ['']
   });
 
+  checkFrequencyForm = this.fb.group({
+    checkFrequency: [null, [Validators.required, Validators.min(30)]]
+  });
+
   constructor(
     public readonly auth: AuthService,
     private readonly fb: FormBuilder,
@@ -37,6 +41,10 @@ export class SettingsPageComponent extends BaseComponent implements OnInit {
     ).subscribe((user: AppUser) => {
       this.profileSettingsForm.patchValue(user.profileSettings);
     });
+
+    this.checkFrequencyForm.patchValue({
+      checkFrequency: localStorage.getItem('checkFrequency') ?? 30
+    });
   }
 
   public onNotificationsSettingsFormSubmit(): void {
@@ -45,9 +53,16 @@ export class SettingsPageComponent extends BaseComponent implements OnInit {
       takeUntil(this.destroyed)
     ).subscribe((user: AppUser) => {
       this.auth.getUserRef(user.uid).update({profileSettings: this.profileSettingsForm.value});
-      this.notifications.show('Ustawienia profilu zostały zapisane', {
+      this.notifications.show('Ustawienia powiadomień zostały zapisane', {
         status: TuiNotification.Success
       }).subscribe();
     });
+  }
+
+  public onCheckFrequencyFormSubmit(): void {
+    localStorage.setItem('checkFrequency', this.checkFrequencyForm.get('checkFrequency').value);
+    this.notifications.show('Ustawienia częstotliwości sprawdzania zostały zapisane', {
+      status: TuiNotification.Success
+    }).subscribe();
   }
 }
