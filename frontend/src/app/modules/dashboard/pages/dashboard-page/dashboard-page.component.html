@@ -8,18 +8,35 @@
       ></tui-toggle>
     </div>
   </div>
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <form class="d-flex" [formGroup]="itemUrlForm" (submit)="onItemUrlForm()">
+        <div class="tui-space_right-2 flex-grow-1">
+          <tui-input formControlName="itemUrl">
+            Adres url przedmiotu<span class="tui-required"></span>
+          </tui-input>
+        </div>
+
+        <button tuiButton type="submit" [disabled]="itemUrlForm.invalid">
+          Dodaj
+        </button>
+      </form>
+    </div>
+  </div>
+
   <div class="row mb-4">
     <div class="col-12">
       <ng-container *ngIf="(auth.user | async) as user">
-        <ng-container *ngFor="let token of user.notificationTokens">
-          <div style="word-break: break-all">
-            {{ token }}
+        <ng-container *ngFor="let url of user.trackedUrls">
+          <div class="py-2">
+            <a tuiLink [href]="url" target="_blank">{{ url }}</a>
           </div>
-          <hr>
         </ng-container>
       </ng-container>
     </div>
   </div>
+
   <div class="row">
     <div class="col-12 justify-content-center">
       <button

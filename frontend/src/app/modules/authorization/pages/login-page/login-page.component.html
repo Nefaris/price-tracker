@@ -4,7 +4,7 @@
       <form class="d-flex flex-column" [formGroup]="loginForm" (submit)="onLoginFormSubmit()">
         <div class="mb-2">
           <tui-input formControlName="email">
-            E-mail
+            E-mail<span class="tui-required"></span>
           </tui-input>
           <tui-field-error
             formControlName="email"
@@ -13,7 +13,7 @@
 
         <div class="mb-3">
           <tui-input-password formControlName="password">
-            Password
+            Password<span class="tui-required"></span>
           </tui-input-password>
           <tui-field-error
             formControlName="password"

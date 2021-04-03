@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
 import { AngularFireMessaging } from '@angular/fire/messaging';
-import { take, takeUntil } from 'rxjs/operators';
+import { finalize, take, takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../../../../shared/components/base.component';
 import { environment } from '../../../../../environments/environment';
 import { AuthService } from '../../../../core/services/auth.service';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { AppUser } from '../../../../shared/interfaces/app-user.interface';
 import { ThemeService } from '../../../../core/services/theme.service';
-import { FormControl } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 
 
 @Component({
@@ -18,11 +18,16 @@ import { FormControl } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardPageComponent extends BaseComponent implements OnInit {
+  itemUrlForm = this.fb.group({
+    itemUrl: ['', [Validators.required]]
+  });
+
   constructor(
     public readonly auth: AuthService,
     private readonly notifications: TuiNotificationsService,
     private readonly fireMessaging: AngularFireMessaging,
     private readonly firestore: AngularFirestore,
+    private readonly fb: FormBuilder,
     public readonly theme: ThemeService
   ) {
     super();
@@ -64,6 +69,37 @@ export class DashboardPageComponent extends BaseComponent implements OnInit {
           autoClose: false
         }).subscribe();
       });
+    });
+  }
+
+  public onItemUrlForm(): void {
+    this.isRequestPending = true;
+    this.itemUrlForm.disable();
+
+    this.auth.user.pipe(
+      finalize(() => {
+        this.isRequestPending = false;
+        this.itemUrlForm.enable();
+      }),
+      take(1),
+      takeUntil(this.destroyed)
+    ).subscribe((user: AppUser) => {
+      const userRef: AngularFirestoreDocument<AppUser> = this.firestore.doc(`users/${user.uid}`);
+      const currentTrackedUrls = new Set(user.trackedUrls);
+      const {itemUrl} = this.itemUrlForm.value;
+
+      if (!currentTrackedUrls.has(itemUrl)) {
+        currentTrackedUrls.add(itemUrl);
+        userRef.update({trackedUrls: Array.from(currentTrackedUrls)});
+        this.itemUrlForm.reset();
+        this.notifications.show('Adres został dodany do śledzonych', {
+          status: TuiNotification.Success
+        }).subscribe();
+      } else {
+        this.notifications.show('Podany adres jest już śledzony', {
+          status: TuiNotification.Warning
+        }).subscribe();
+      }
     });
   }
 }
