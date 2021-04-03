@@ -1,0 +1,88 @@
+<div class="row">
+  <div class="col-12">
+    <p class="tui-text_h2 tui-space_top-0 tui-space_bottom-6">Ustawienia</p>
+  </div>
+</div>
+
+<div class="row" *ngIf="auth.user | async">
+  <div class="col-12">
+    <div class="row">
+      <form class="col-12" [formGroup]="profileSettingsForm" (submit)="onNotificationsSettingsFormSubmit()">
+        <div class="tui-space_bottom-10">
+          <p class="tui-text_h6">Powiadomienia</p>
+          <div class="d-flex align-items-center mb-3">
+            <tui-toggle
+              class="flex-shrink-0"
+              formControlName="email"
+              size="l"
+              [showIcons]="true"
+            ></tui-toggle>
+            <span class="tui-space_left-3">Powiadomienia E-mail</span>
+          </div>
+
+          <div class="d-flex align-items-center mb-3">
+            <tui-toggle
+              class="flex-shrink-0"
+              formControlName="messenger"
+              size="l"
+              [showIcons]="true"
+            ></tui-toggle>
+            <span class="tui-space_left-3">Powiadomienia Messenger</span>
+          </div>
+
+          <div class="d-flex align-items-center mb-3">
+            <tui-toggle
+              class="flex-shrink-0"
+              formControlName="push"
+              size="l"
+              [showIcons]="true"
+            ></tui-toggle>
+            <span class="tui-space_left-3">Powiadomienia Push (dostępne tylko na Windows oraz MacOS)</span>
+          </div>
+        </div>
+
+        <div class="tui-space_bottom-10">
+          <p class="tui-text_h6">Adresy powiadomień</p>
+
+          <label
+            tuiLabel
+            label="Jeśli powiadomienia e-mail są włączone, podaj adres e-mail na który chcesz otrzymywać powiadomienia."
+          >
+            <tui-input class="mb-3" formControlName="notificationsEmail">
+              Adres e-mail<span class="tui-required"></span>
+            </tui-input>
+          </label>
+
+
+          <label
+            tuiLabel
+            label="Jeśli powiadomienia messenger są włączone, podaj adres konta na który chcesz otrzymywać powiadomienia."
+          >
+            <tui-input class="mb-3" formControlName="notificationsMessenger">
+              Adres konta messenger<span class="tui-required"></span>
+            </tui-input>
+          </label>
+        </div>
+
+        <button
+          tuiButton
+          type="submit"
+        >
+          Zapisz ustawienia
+        </button>
+      </form>
+    </div>
+
+    <!--      <p class="tui-text_h6">Motyw aplikacji</p>-->
+    <!--      <form class="col-12" [formGroup]="profileSettingsForm">-->
+    <!--        <div class="d-flex align-items-center tui-space_bottom-3">-->
+    <!--          <tui-toggle-->
+    <!--            formControlName="darkTheme"-->
+    <!--            size="l"-->
+    <!--            [showIcons]="true"-->
+    <!--          ></tui-toggle>-->
+    <!--          <span class="tui-space_left-3">Ciemny motyw</span>-->
+    <!--        </div>-->
+    <!--      </form>-->
+  </div>
+</div>

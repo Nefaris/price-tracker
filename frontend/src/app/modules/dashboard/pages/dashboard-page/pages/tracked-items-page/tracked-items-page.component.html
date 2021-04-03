@@ -1,0 +1,57 @@
+<div class="row">
+  <div class="col-12">
+    <p class="tui-text_h2 tui-space_top-0 tui-space_bottom-6">Obserwowane przedmioty</p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="tui-space_bottom-10">
+      <p class="tui-text_h6">Dodaj przedmiot</p>
+      <form [formGroup]="itemForm" (submit)="onItemFormSubmit()">
+        <div class="row">
+          <div class="col-12 col-lg-7 mb-3 mb-lg-0">
+            <tui-input formControlName="url">
+              Adres url przedmiotu<span class="tui-required"></span>
+            </tui-input>
+          </div>
+
+          <div class="col-12 col-lg-3 mb-3 mb-lg-0">
+            <tui-input formControlName="name">
+              Nazwa pomocnicza<span class="tui-required"></span>
+            </tui-input>
+          </div>
+
+          <div class="col-12 col-lg-2 d-flex flex-column">
+            <button tuiButton type="submit" [disabled]="itemForm.invalid">
+              Dodaj
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="(auth.user | async) as user">
+  <p class="tui-text_h6">Lista obserwowanych</p>
+  <p *ngIf="user.trackedItems.length === 0">Brak obserwowanych przedmiotów.</p>
+  <ng-container *ngIf="user.trackedItems.length > 0">
+    <div class="d-flex align-items-center py-2" *ngFor="let item of user.trackedItems">
+      <button
+        tuiButton
+        type="button"
+        size="s"
+        class="tui-space_right-2"
+        (click)="onItemRemove(item)"
+      >
+        Usuń
+      </button>
+      <span class="tui-space_right-2">[{{ item.name }}]</span>
+      <a tuiLink [href]="item.url" target="_blank" title="Przejdź do strony przedmiotu">
+        {{ item.url }}
+        <tui-svg src="tuiIconArrowUpRight"></tui-svg>
+      </a>
+    </div>
+  </ng-container>
+</div>
