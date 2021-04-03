@@ -11,8 +11,8 @@ const getTrackedUrls = async (): Promise<TrackedUrls> => {
     for (const user of users) {
         const { push, email, messenger, notificationsEmail } = user.profileSettings;
 
-        if (user.trackedUrls) {
-            for (const url of user.trackedUrls) {
+        if (user.trackedItems) {
+            for (const { url } of user.trackedItems) {
                 if (!allTrackedUrls[url]) {
                     allTrackedUrls[url] = {
                         pushTokens: [],
