@@ -3,9 +3,10 @@ export interface AppUser {
   email: string;
   notificationTokens: string[];
   trackedUrls: string[];
-  notificationsSettings: {
+  profileSettings: {
     email: boolean;
     messenger: boolean;
     push: boolean;
+    darkTheme: boolean;
   };
 }

@@ -5,7 +5,7 @@ import { debounceTime, finalize, take, takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../../../../shared/components/base.component';
 import { environment } from '../../../../../environments/environment';
 import { AuthService } from '../../../../core/services/auth.service';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { AppUser } from '../../../../shared/interfaces/app-user.interface';
 import { ThemeService } from '../../../../core/services/theme.service';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -18,14 +18,17 @@ import { FormBuilder, Validators } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardPageComponent extends BaseComponent implements OnInit {
+  activeTabIndex = 0;
+
   itemUrlForm = this.fb.group({
     itemUrl: ['', [Validators.required]]
   });
 
-  notificationsSettingsForm = this.fb.group({
+  profileSettingsForm = this.fb.group({
     email: [false],
     messenger: [false],
-    push: [false]
+    push: [false],
+    darkTheme: [false]
   });
 
   constructor(
@@ -48,10 +51,10 @@ export class DashboardPageComponent extends BaseComponent implements OnInit {
       take(1),
       takeUntil(this.destroyed)
     ).subscribe((user: AppUser) => {
-      this.notificationsSettingsForm.patchValue(user.notificationsSettings, {emitEvent: false});
+      this.profileSettingsForm.patchValue(user.profileSettings, {emitEvent: false});
     });
 
-    this.notificationsSettingsForm.valueChanges.pipe(
+    this.profileSettingsForm.valueChanges.pipe(
       debounceTime(1000),
       takeUntil(this.destroyed)
     ).subscribe(() => {
@@ -140,7 +143,7 @@ export class DashboardPageComponent extends BaseComponent implements OnInit {
       take(1),
       takeUntil(this.destroyed)
     ).subscribe((user: AppUser) => {
-      this.auth.getUserRef(user.uid).update({notificationsSettings: this.notificationsSettingsForm.value});
+      this.auth.getUserRef(user.uid).update({profileSettings: this.profileSettingsForm.value});
       this.notifications.show('Ustawienia powiadomień zostały zapisane', {
         status: TuiNotification.Success
       }).subscribe();

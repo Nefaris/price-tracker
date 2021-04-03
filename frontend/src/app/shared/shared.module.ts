@@ -1,11 +1,19 @@
 import { NgModule } from '@angular/core';
-import { TuiButtonModule, TuiColorModule, TuiLinkModule, TuiNotificationsModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import {
+  TuiButtonModule,
+  TuiColorModule,
+  TuiLinkModule,
+  TuiNotificationsModule,
+  TuiSvgModule,
+  TuiTextfieldControllerModule
+} from '@taiga-ui/core';
 import {
   TuiAvatarModule,
   TuiFieldErrorModule,
   TuiInputModule,
   TuiInputPasswordModule,
   TuiIslandModule,
+  TuiTabsModule,
   TuiToggleModule
 } from '@taiga-ui/kit';
 import { BaseComponent } from './components/base.component';
@@ -27,7 +35,9 @@ const SHARED_MODULES = [
   TuiInputModule,
   TuiInputPasswordModule,
   TuiFieldErrorModule,
-  TuiToggleModule
+  TuiToggleModule,
+  TuiTabsModule,
+  TuiSvgModule
 ];
 
 @NgModule({

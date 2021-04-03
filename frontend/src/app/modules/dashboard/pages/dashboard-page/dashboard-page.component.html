@@ -1,62 +1,25 @@
-<div class="container py-5">
-  <div class="row">
-    <div class="col-12">
-      <p class="tui-text_h2">Ustawienia</p>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-12">
-      <p class="tui-text_h6">Ustawienia powiadomień</p>
-      <div class="row" *ngIf="auth.user | async">
-        <form class="col-12" [formGroup]="notificationsSettingsForm">
-          <div class="d-flex align-items-center tui-space_bottom-4">
-            <tui-toggle
-              class="flex-shrink-0"
-              formControlName="email"
-              size="l"
-              [showIcons]="true"
-            ></tui-toggle>
-            <span class="tui-space_left-3">Powiadomienia E-mail</span>
-          </div>
+<div class="container pt-5">
+  <tui-tabs [(activeItemIndex)]="activeTabIndex">
+    <button tuiTab type="button" (click)="activeTabIndex = 0">
+      <tui-svg src="tuiIconBell" class="tui-space_right-2"></tui-svg>
+      Obserwowane
+    </button>
+    <button tuiTab type="button" (click)="activeTabIndex = 1">
+      <tui-svg src="tuiIconSettings" class="tui-space_right-2"></tui-svg>
+      Ustawienia
+    </button>
 
-          <div class="d-flex align-items-center tui-space_bottom-4">
-            <tui-toggle
-              class="flex-shrink-0"
-              formControlName="messenger"
-              size="l"
-              [showIcons]="true"
-            ></tui-toggle>
-            <span class="tui-space_left-3">Powiadomienia Messenger</span>
-          </div>
-
-          <div class="d-flex align-items-center tui-space_bottom-4">
-            <tui-toggle
-              class="flex-shrink-0"
-              formControlName="push"
-              size="l"
-              [showIcons]="true"
-            ></tui-toggle>
-            <span class="tui-space_left-3">Powiadomienia Push (dostępne tylko na Windows oraz MacOS)</span>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+    <button tuiTab type="button" style="margin-left: auto;" (click)="auth.signOut()">
+      Wyloguj
+      <tui-svg src="tuiIconArrowRight"></tui-svg>
+    </button>
+  </tui-tabs>
 </div>
 
-<div class="container py-5">
+<div class="container py-4" *ngIf="activeTabIndex === 0">
   <div class="row">
     <div class="col-12">
       <p class="tui-text_h2">Obserwowane przedmioty</p>
-    </div>
-  </div>
-  <div class="row mb-4">
-    <div class="col-12">
-      <tui-toggle
-        [formControl]="theme.isDarkMode"
-        size="l"
-        [showIcons]="true"
-      ></tui-toggle>
     </div>
   </div>
 
@@ -96,16 +59,62 @@
       </ng-container>
     </div>
   </div>
+</div>
 
+<div class="container py-4" *ngIf="activeTabIndex === 1">
   <div class="row">
-    <div class="col-12 justify-content-center">
-      <button
-        tuiButton
-        type="button"
-        (click)="auth.signOut()"
-      >
-        Logout
-      </button>
+    <div class="col-12">
+      <p class="tui-text_h2">Ustawienia</p>
+    </div>
+  </div>
+  <div class="row" *ngIf="auth.user | async">
+    <div class="col-12">
+      <div class="row">
+        <p class="tui-text_h6">Powiadomienia</p>
+        <form class="col-12" [formGroup]="profileSettingsForm">
+          <div class="d-flex align-items-center tui-space_bottom-4">
+            <tui-toggle
+              class="flex-shrink-0"
+              formControlName="email"
+              size="l"
+              [showIcons]="true"
+            ></tui-toggle>
+            <span class="tui-space_left-3">Powiadomienia E-mail</span>
+          </div>
+
+          <div class="d-flex align-items-center tui-space_bottom-4">
+            <tui-toggle
+              class="flex-shrink-0"
+              formControlName="messenger"
+              size="l"
+              [showIcons]="true"
+            ></tui-toggle>
+            <span class="tui-space_left-3">Powiadomienia Messenger</span>
+          </div>
+
+          <div class="d-flex align-items-center tui-space_bottom-4">
+            <tui-toggle
+              class="flex-shrink-0"
+              formControlName="push"
+              size="l"
+              [showIcons]="true"
+            ></tui-toggle>
+            <span class="tui-space_left-3">Powiadomienia Push (dostępne tylko na Windows oraz MacOS)</span>
+          </div>
+        </form>
+      </div>
+
+      <!--      <p class="tui-text_h6">Motyw aplikacji</p>-->
+      <!--      <form class="col-12" [formGroup]="profileSettingsForm">-->
+      <!--        <div class="d-flex align-items-center tui-space_bottom-4">-->
+      <!--          <tui-toggle-->
+      <!--            formControlName="darkTheme"-->
+      <!--            size="l"-->
+      <!--            [showIcons]="true"-->
+      <!--          ></tui-toggle>-->
+      <!--          <span class="tui-space_left-3">Ciemny motyw</span>-->
+      <!--        </div>-->
+      <!--      </form>-->
     </div>
   </div>
 </div>
