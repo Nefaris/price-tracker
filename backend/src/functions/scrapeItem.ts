@@ -1,7 +1,7 @@
 import config from "../config.json"
 import { AxiosInstance } from "axios";
 import cheerio from 'cheerio';
-import { Item } from "../types/item";
+import { Item } from "../types";
 
 const scrapeItem = async (axios: AxiosInstance, url: string): Promise<Item> => {
     const storeSettings = config.stores.filter(store => url.includes(store.name))[0]

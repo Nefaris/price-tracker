@@ -5,7 +5,7 @@ import axios from 'axios';
 import scrapeItem from './functions/scrapeItem';
 import getUrlsWithTokens from './functions/getUrlsWithTokens';
 import * as admin from 'firebase-admin';
-import { Item } from './types/item';
+import { Item } from './types';
 const serviceAccount = require("../serviceAccountKey.json");
 const axiosInstance = axios.create();
 const app = express();
@@ -17,12 +17,12 @@ admin.initializeApp({
 export const firestore = admin.firestore();
 export const messaging = admin.messaging();
 
-cron.schedule('* * * * *', function () {
-    console.log('running a task every minute');
-    cronJob();
-});
+// cron.schedule('* * * * *', function () {
+//     console.log('running a task every minute');
+//     cronJob();
+// });
 
-app.listen(3000);
+// app.listen(3000);
 
 
 const cronJob = async () => {
@@ -31,7 +31,7 @@ const cronJob = async () => {
     console.log(allTrackedUrls, scrapedItems);
 
     for (const url in allTrackedUrls) {
-        const tokens = allTrackedUrls[url];
+        const tokens = allTrackedUrls[url].pushTokens;
         const item = scrapedItems.find(item => item.url === url);
 
         if (!item.available) continue;
