@@ -6,8 +6,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {
   iconsPathFactory,
-  TUI_ICONS_PATH,
+  TUI_ICONS_PATH, TuiModeModule,
   TuiRootModule,
+  TuiThemeNightModule,
 } from '@taiga-ui/core';
 import { SharedModule } from './shared/shared.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -27,6 +28,8 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
     AppRoutingModule,
     BrowserAnimationsModule,
     TuiRootModule,
+    TuiThemeNightModule,
+    TuiModeModule,
     SharedModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireMessagingModule,

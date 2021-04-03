@@ -3,6 +3,7 @@ import 'firebase/messaging';
 import { SwUpdate } from '@angular/service-worker';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from './shared/components/base.component';
+import { ThemeService } from './core/services/theme.service';
 
 
 @Component({
@@ -11,7 +12,10 @@ import { BaseComponent } from './shared/components/base.component';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent extends BaseComponent implements OnInit {
-  constructor(private readonly swUpdate: SwUpdate) {
+  constructor(
+    public readonly theme: ThemeService,
+    private readonly swUpdate: SwUpdate
+  ) {
     super();
   }
 

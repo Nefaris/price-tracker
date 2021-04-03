@@ -29,12 +29,23 @@ export class AuthService {
     );
   }
 
-  public async signInWithEmail(email: string, password: string): Promise<any> {
-    return await this.fireAuth.signInWithEmailAndPassword(email, password);
+  public async signInWithEmail(email: string, password: string): Promise<void> {
+    const credentials = await this.fireAuth.signInWithEmailAndPassword(email, password);
+    return this.updateUserData(credentials.user);
   }
 
   public async signOut(): Promise<boolean> {
     await this.fireAuth.signOut();
     return this.router.navigate(['/']);
+  }
+
+  private updateUserData({uid, email}: User): Promise<void> {
+    const userRef: AngularFirestoreDocument<AppUser> = this.firestore.doc(`users/${uid}`);
+    const data = {
+      uid,
+      email,
+    } as AppUser;
+
+    return userRef.set(data, {merge: true});
   }
 }

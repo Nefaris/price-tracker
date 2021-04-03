@@ -1,6 +1,15 @@
 <div class="container py-5">
   <div class="row mb-4">
     <div class="col-12">
+      <tui-toggle
+        [formControl]="theme.isDarkMode"
+        size="l"
+        [showIcons]="true"
+      ></tui-toggle>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-12">
       <ng-container *ngIf="(auth.user | async) as user">
         <ng-container *ngFor="let token of user.notificationTokens">
           <div style="word-break: break-all">

@@ -6,3 +6,12 @@
 *::after {
   box-sizing: border-box;
 }
+
+tui-root {
+  min-height: 100vh;
+  transition: background-color 350ms;
+
+  &.dark {
+    background: #2D2D2D;
+  }
+}

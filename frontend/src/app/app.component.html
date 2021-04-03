@@ -1,4 +1,4 @@
-<tui-root>
+<tui-root [tuiMode]="theme.isDarkMode.value && 'onDark'" [class.dark]="theme.isDarkMode.value">
   <ng-container ngProjectAs="tuiOverDialogs"></ng-container>
   <ng-container ngProjectAs="tuiOverNotifications"></ng-container>
   <ng-container ngProjectAs="tuiOverHints"></ng-container>

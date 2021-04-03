@@ -7,6 +7,7 @@
     "build:dev": "ng build",
     "build:prod": "ng build --prod",
     "live:prod": "npm run build:prod && serve -s dist/price-checker",
+    "deploy": "npm run build:prod && firebase deploy",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
