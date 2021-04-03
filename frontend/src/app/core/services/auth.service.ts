@@ -43,11 +43,23 @@ export class AuthService {
     return this.router.navigate(['/']);
   }
 
-  private updateUserData({uid, email}: User): Promise<void> {
+  private async updateUserData({uid, email}: User): Promise<void> {
     const userRef: AngularFirestoreDocument<AppUser> = this.firestore.doc(`users/${uid}`);
+    const user = await userRef.get().toPromise();
+
     const data = {
       uid,
       email,
+      ...!user.data().trackedItems && {trackedItems: []},
+      ...!user.data().notificationTokens && {notificationTokens: []},
+      profileSettings: {
+        ...!user.data().profileSettings.email && {email: true},
+        ...!user.data().profileSettings.messenger && {messenger: true},
+        ...!user.data().profileSettings.email && {push: true},
+        ...!user.data().profileSettings.email && {darkTheme: true},
+        ...!user.data().profileSettings.email && {notificationsEmail: ''},
+        ...!user.data().profileSettings.email && {notificationsMessenger: ''}
+      }
     } as AppUser;
 
     return userRef.set(data, {merge: true});

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import {
   TuiButtonModule,
-  TuiColorModule,
+  TuiColorModule, TuiLabelModule,
   TuiLinkModule,
   TuiNotificationsModule,
   TuiSvgModule,
@@ -37,7 +37,8 @@ const SHARED_MODULES = [
   TuiFieldErrorModule,
   TuiToggleModule,
   TuiTabsModule,
-  TuiSvgModule
+  TuiSvgModule,
+  TuiLabelModule
 ];
 
 @NgModule({

@@ -1,17 +1,17 @@
 <div class="container pt-5">
   <tui-tabs [(activeItemIndex)]="activeTabIndex">
-    <button tuiTab type="button" (click)="activeTabIndex = 0">
-      <tui-svg src="tuiIconBell" class="tui-space_right-2"></tui-svg>
-      Obserwowane
+    <button tuiTab type="button" class="px-3 px-md-0" (click)="activeTabIndex = 0">
+      <tui-svg src="tuiIconBell"></tui-svg>
+      <span class="d-none d-md-inline tui-space_left-2">Obserwowane</span>
     </button>
-    <button tuiTab type="button" (click)="activeTabIndex = 1">
-      <tui-svg src="tuiIconSettings" class="tui-space_right-2"></tui-svg>
-      Ustawienia
+    <button tuiTab type="button" class="px-3 px-md-0" (click)="activeTabIndex = 1">
+      <tui-svg src="tuiIconSettings"></tui-svg>
+      <span class="d-none d-md-inline tui-space_left-2">Ustawienia</span>
     </button>
 
     <button tuiTab type="button" style="margin-left: auto;" (click)="auth.signOut()">
-      Wyloguj
-      <tui-svg src="tuiIconArrowRight"></tui-svg>
+      <span class="mx-3 mx-lg-0">Wyloguj</span>
+      <tui-svg src="tuiIconArrowRight" class="d-none d-md-block"></tui-svg>
     </button>
   </tui-tabs>
 </div>
@@ -19,94 +19,141 @@
 <div class="container py-4" *ngIf="activeTabIndex === 0">
   <div class="row">
     <div class="col-12">
-      <p class="tui-text_h2">Obserwowane przedmioty</p>
+      <p class="tui-text_h2 tui-space_top-0 tui-space_bottom-6">Obserwowane przedmioty</p>
     </div>
   </div>
 
-  <div class="row mb-4">
+  <div class="row">
     <div class="col-12">
-      <form class="d-flex" [formGroup]="itemUrlForm" (submit)="onItemUrlForm()">
-        <div class="tui-space_right-2 flex-grow-1">
-          <tui-input formControlName="itemUrl">
-            Adres url przedmiotu<span class="tui-required"></span>
-          </tui-input>
-        </div>
+      <div class="tui-space_bottom-10">
+        <p class="tui-text_h6">Dodaj przedmiot</p>
+        <form [formGroup]="itemForm" (submit)="onItemUrlForm()">
+          <div class="row">
+            <div class="col-12 col-lg-7 mb-3 mb-lg-0">
+              <tui-input formControlName="url">
+                Adres url przedmiotu<span class="tui-required"></span>
+              </tui-input>
+            </div>
 
-        <button tuiButton type="submit" [disabled]="itemUrlForm.invalid">
-          Dodaj
-        </button>
-      </form>
-    </div>
-  </div>
+            <div class="col-12 col-lg-3 mb-3 mb-lg-0">
+              <tui-input formControlName="name">
+                Nazwa pomocnicza<span class="tui-required"></span>
+              </tui-input>
+            </div>
 
-  <div class="row mb-4">
-    <div class="col-12">
-      <ng-container *ngIf="(auth.user | async) as user">
-        <ng-container *ngFor="let url of user.trackedUrls">
-          <div class="d-flex align-items-center py-2">
-            <button
-              tuiButton
-              type="button"
-              size="s"
-              class="tui-space_right-2"
-              (click)="onItemUrlRemove(url)"
-            >
-              Usuń
-            </button>
-            <a tuiLink [href]="url" target="_blank">{{ url }}</a>
+            <div class="col-12 col-lg-2 d-flex flex-column">
+              <button tuiButton type="submit" [disabled]="itemForm.invalid">
+                Dodaj
+              </button>
+            </div>
           </div>
-        </ng-container>
-      </ng-container>
+        </form>
+      </div>
     </div>
+  </div>
+
+  <div *ngIf="(auth.user | async) as user">
+    <p class="tui-text_h6">Lista obserwowanych</p>
+    <p *ngIf="user.trackedItems.length === 0">Brak obserwowanych przedmiotów.</p>
+    <ng-container *ngIf="user.trackedItems.length > 0">
+      <div class="d-flex align-items-center py-2" *ngFor="let item of user.trackedItems">
+        <button
+          tuiButton
+          type="button"
+          size="s"
+          class="tui-space_right-2"
+          (click)="onItemUrlRemove(item)"
+        >
+          Usuń
+        </button>
+        <span class="tui-space_right-2">[{{ item.name }}]</span>
+        <a tuiLink [href]="item.url" target="_blank" title="Przejdź do strony przedmiotu">
+          {{ item.url }}
+          <tui-svg src="tuiIconArrowUpRight"></tui-svg>
+        </a>
+      </div>
+    </ng-container>
   </div>
 </div>
 
 <div class="container py-4" *ngIf="activeTabIndex === 1">
   <div class="row">
     <div class="col-12">
-      <p class="tui-text_h2">Ustawienia</p>
+      <p class="tui-text_h2 tui-space_top-0 tui-space_bottom-6">Ustawienia</p>
     </div>
   </div>
   <div class="row" *ngIf="auth.user | async">
     <div class="col-12">
       <div class="row">
-        <p class="tui-text_h6">Powiadomienia</p>
-        <form class="col-12" [formGroup]="profileSettingsForm">
-          <div class="d-flex align-items-center tui-space_bottom-4">
-            <tui-toggle
-              class="flex-shrink-0"
-              formControlName="email"
-              size="l"
-              [showIcons]="true"
-            ></tui-toggle>
-            <span class="tui-space_left-3">Powiadomienia E-mail</span>
+        <form class="col-12" [formGroup]="profileSettingsForm" (submit)="onNotificationsSettingsFormSubmit()">
+          <div class="tui-space_bottom-10">
+            <p class="tui-text_h6">Powiadomienia</p>
+            <div class="d-flex align-items-center mb-3">
+              <tui-toggle
+                class="flex-shrink-0"
+                formControlName="email"
+                size="l"
+                [showIcons]="true"
+              ></tui-toggle>
+              <span class="tui-space_left-3">Powiadomienia E-mail</span>
+            </div>
+
+            <div class="d-flex align-items-center mb-3">
+              <tui-toggle
+                class="flex-shrink-0"
+                formControlName="messenger"
+                size="l"
+                [showIcons]="true"
+              ></tui-toggle>
+              <span class="tui-space_left-3">Powiadomienia Messenger</span>
+            </div>
+
+            <div class="d-flex align-items-center mb-3">
+              <tui-toggle
+                class="flex-shrink-0"
+                formControlName="push"
+                size="l"
+                [showIcons]="true"
+              ></tui-toggle>
+              <span class="tui-space_left-3">Powiadomienia Push (dostępne tylko na Windows oraz MacOS)</span>
+            </div>
           </div>
 
-          <div class="d-flex align-items-center tui-space_bottom-4">
-            <tui-toggle
-              class="flex-shrink-0"
-              formControlName="messenger"
-              size="l"
-              [showIcons]="true"
-            ></tui-toggle>
-            <span class="tui-space_left-3">Powiadomienia Messenger</span>
+          <div class="tui-space_bottom-10">
+            <p class="tui-text_h6">Adresy powiadomień</p>
+
+            <label
+              tuiLabel
+              label="Jeśli powiadomienia e-mail są włączone, podaj adres e-mail na który chcesz otrzymywać powiadomienia."
+            >
+              <tui-input class="mb-3" formControlName="notificationsEmail">
+                Adres e-mail<span class="tui-required"></span>
+              </tui-input>
+            </label>
+
+
+            <label
+              tuiLabel
+              label="Jeśli powiadomienia messenger są włączone, podaj adres konta na który chcesz otrzymywać powiadomienia."
+            >
+              <tui-input class="mb-3" formControlName="notificationsMessenger">
+                Adres konta messenger<span class="tui-required"></span>
+              </tui-input>
+            </label>
           </div>
 
-          <div class="d-flex align-items-center tui-space_bottom-4">
-            <tui-toggle
-              class="flex-shrink-0"
-              formControlName="push"
-              size="l"
-              [showIcons]="true"
-            ></tui-toggle>
-            <span class="tui-space_left-3">Powiadomienia Push (dostępne tylko na Windows oraz MacOS)</span>
-          </div>
+          <button
+            tuiButton
+            type="submit"
+          >
+            Zapisz ustawienia
+          </button>
         </form>
       </div>
 
       <!--      <p class="tui-text_h6">Motyw aplikacji</p>-->
       <!--      <form class="col-12" [formGroup]="profileSettingsForm">-->
-      <!--        <div class="d-flex align-items-center tui-space_bottom-4">-->
+      <!--        <div class="d-flex align-items-center tui-space_bottom-3">-->
       <!--          <tui-toggle-->
       <!--            formControlName="darkTheme"-->
       <!--            size="l"-->

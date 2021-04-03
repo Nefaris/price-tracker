@@ -1,23 +1,17 @@
 <div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-12 col-md-5">
+    <div class="col-12 col-md-7 col-lg-5">
       <form class="d-flex flex-column" [formGroup]="loginForm" (submit)="onLoginFormSubmit()">
         <div class="mb-2">
           <tui-input formControlName="email">
-            E-mail<span class="tui-required"></span>
+            Adres e-mail<span class="tui-required"></span>
           </tui-input>
-          <tui-field-error
-            formControlName="email"
-          ></tui-field-error>
         </div>
 
         <div class="mb-3">
           <tui-input-password formControlName="password">
-            Password<span class="tui-required"></span>
+            Hasło<span class="tui-required"></span>
           </tui-input-password>
-          <tui-field-error
-            formControlName="password"
-          ></tui-field-error>
         </div>
 
         <button

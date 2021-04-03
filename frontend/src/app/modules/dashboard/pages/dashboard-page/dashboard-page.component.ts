@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
 import { AngularFireMessaging } from '@angular/fire/messaging';
-import { debounceTime, finalize, take, takeUntil } from 'rxjs/operators';
+import { finalize, take, takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../../../../shared/components/base.component';
 import { environment } from '../../../../../environments/environment';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -9,6 +9,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { AppUser } from '../../../../shared/interfaces/app-user.interface';
 import { ThemeService } from '../../../../core/services/theme.service';
 import { FormBuilder, Validators } from '@angular/forms';
+import { v4 as uuidv4 } from 'uuid';
+import { TrackedItem } from '../../../../shared/interfaces/tracked-item.interface';
 
 
 @Component({
@@ -20,15 +22,18 @@ import { FormBuilder, Validators } from '@angular/forms';
 export class DashboardPageComponent extends BaseComponent implements OnInit {
   activeTabIndex = 0;
 
-  itemUrlForm = this.fb.group({
-    itemUrl: ['', [Validators.required]]
+  itemForm = this.fb.group({
+    url: ['', [Validators.required]],
+    name: ['', [Validators.required]]
   });
 
   profileSettingsForm = this.fb.group({
     email: [false],
     messenger: [false],
     push: [false],
-    darkTheme: [false]
+    darkTheme: [false],
+    notificationsEmail: [''],
+    notificationsMessenger: ['']
   });
 
   constructor(
@@ -51,14 +56,7 @@ export class DashboardPageComponent extends BaseComponent implements OnInit {
       take(1),
       takeUntil(this.destroyed)
     ).subscribe((user: AppUser) => {
-      this.profileSettingsForm.patchValue(user.profileSettings, {emitEvent: false});
-    });
-
-    this.profileSettingsForm.valueChanges.pipe(
-      debounceTime(1000),
-      takeUntil(this.destroyed)
-    ).subscribe(() => {
-      this.onNotificationsSettingsFormSubmit();
+      this.profileSettingsForm.patchValue(user.profileSettings);
     });
   }
 
@@ -96,43 +94,34 @@ export class DashboardPageComponent extends BaseComponent implements OnInit {
 
   public onItemUrlForm(): void {
     this.isRequestPending = true;
-    this.itemUrlForm.disable();
+    this.itemForm.disable();
 
     this.auth.user.pipe(
       finalize(() => {
         this.isRequestPending = false;
-        this.itemUrlForm.enable();
+        this.itemForm.enable();
       }),
       take(1),
       takeUntil(this.destroyed)
     ).subscribe((user: AppUser) => {
-      const currentTrackedUrls = new Set(user.trackedUrls);
-      const {itemUrl} = this.itemUrlForm.value;
-
-      if (!currentTrackedUrls.has(itemUrl)) {
-        currentTrackedUrls.add(itemUrl);
-        this.auth.getUserRef(user.uid).update({trackedUrls: Array.from(currentTrackedUrls)});
-        this.itemUrlForm.reset();
-        this.notifications.show('Przedmiot został dodany do obserwowanych', {
-          status: TuiNotification.Success
-        }).subscribe();
-      } else {
-        this.notifications.show('Przedmiot jest już obserwowanych', {
-          status: TuiNotification.Warning
-        }).subscribe();
-      }
+      this.auth.getUserRef(user.uid).update({trackedItems: [...user.trackedItems, {...this.itemForm.value, id: uuidv4()}]});
+      this.notifications.show(`Przedmiot: ${this.itemForm.get('name').value} został dodany do obserwowanych`, {
+        status: TuiNotification.Success
+      }).subscribe();
+      this.itemForm.reset();
     });
   }
 
-  public onItemUrlRemove(itemUrl: string): void {
+  public onItemUrlRemove(item: TrackedItem): void {
     this.auth.user.pipe(
       take(1),
       takeUntil(this.destroyed)
     ).subscribe((user: AppUser) => {
-      const currentTrackedUrls = new Set(user.trackedUrls);
-      currentTrackedUrls.delete(itemUrl);
-      this.auth.getUserRef(user.uid).update({trackedUrls: Array.from(currentTrackedUrls)});
-      this.notifications.show('Przedmiot został usunięty z obserwowanych', {
+      this.auth.getUserRef(user.uid).update({
+        trackedItems: user.trackedItems.filter(i => i.id !== item.id)
+      });
+
+      this.notifications.show(`Przedmiot: ${item.name} został usunięty z obserwowanych`, {
         status: TuiNotification.Success
       }).subscribe();
     });
