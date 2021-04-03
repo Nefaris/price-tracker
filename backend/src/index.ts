@@ -6,6 +6,7 @@ import scrapeItem from './functions/scrapeItem';
 import getUrlsWithTokens from './functions/getUrlsWithTokens';
 import * as admin from 'firebase-admin';
 import { Item } from './types';
+import { sendEmails } from './functions/email';
 const serviceAccount = require("../serviceAccountKey.json");
 const axiosInstance = axios.create();
 const app = express();
@@ -31,13 +32,15 @@ const cronJob = async () => {
     console.log(allTrackedUrls, scrapedItems);
 
     for (const url in allTrackedUrls) {
-        const tokens = allTrackedUrls[url].pushTokens;
+        const { pushTokens, emails } = allTrackedUrls[url];
         const item = scrapedItems.find(item => item.url === url);
 
         if (!item.available) continue;
 
+        sendEmails(emails, `Cena: ${item.price} <img src="${item.img}" />`)
+
         const message = {
-            tokens,
+            tokens: pushTokens,
             data: {
                 "title": "Dostępny przedmiot!",
                 "body": `Cena: ${item.price}`,
