@@ -48,6 +48,8 @@ export class LoginPageComponent extends BaseComponent {
         message = 'Wprowadzono niepoprawne dane logowania';
       } else if (error.code === 'auth/too-many-requests') {
         message = 'Za dużo prób logowania, dostęp do konta został tymczasowo zablokowany, spróbuj ponownie za jakiś czas';
+      } else if (error.code === 'auth/user-disabled') {
+        message = 'Twoje konto jest zablokowane, skontaktuj się z administratorem';
       } else {
         message = 'Wystąpił błąd podczas próby logowania, spróbuj ponownie';
       }
