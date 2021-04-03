@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
 import { AngularFireMessaging } from '@angular/fire/messaging';
-import { finalize, take, takeUntil } from 'rxjs/operators';
+import { debounceTime, finalize, take, takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../../../../shared/components/base.component';
 import { environment } from '../../../../../environments/environment';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -22,6 +22,12 @@ export class DashboardPageComponent extends BaseComponent implements OnInit {
     itemUrl: ['', [Validators.required]]
   });
 
+  notificationsSettingsForm = this.fb.group({
+    email: [false],
+    messenger: [false],
+    push: [false]
+  });
+
   constructor(
     public readonly auth: AuthService,
     private readonly notifications: TuiNotificationsService,
@@ -37,6 +43,20 @@ export class DashboardPageComponent extends BaseComponent implements OnInit {
     if (environment.production) {
       this.initCloudNotifications();
     }
+
+    this.auth.user.pipe(
+      take(1),
+      takeUntil(this.destroyed)
+    ).subscribe((user: AppUser) => {
+      this.notificationsSettingsForm.patchValue(user.notificationsSettings, {emitEvent: false});
+    });
+
+    this.notificationsSettingsForm.valueChanges.pipe(
+      debounceTime(1000),
+      takeUntil(this.destroyed)
+    ).subscribe(() => {
+      this.onNotificationsSettingsFormSubmit();
+    });
   }
 
   private initCloudNotifications(): void {
@@ -50,10 +70,9 @@ export class DashboardPageComponent extends BaseComponent implements OnInit {
           take(1),
           takeUntil(this.destroyed)
         ).subscribe((user: AppUser) => {
-          const userRef: AngularFirestoreDocument<AppUser> = this.firestore.doc(`users/${user.uid}`);
           const currentTokens = new Set(user.notificationTokens);
           currentTokens.add(token);
-          userRef.update({notificationTokens: Array.from(currentTokens)});
+          this.auth.getUserRef(user.uid).update({notificationTokens: Array.from(currentTokens)});
         });
       });
     });
@@ -84,13 +103,12 @@ export class DashboardPageComponent extends BaseComponent implements OnInit {
       take(1),
       takeUntil(this.destroyed)
     ).subscribe((user: AppUser) => {
-      const userRef: AngularFirestoreDocument<AppUser> = this.firestore.doc(`users/${user.uid}`);
       const currentTrackedUrls = new Set(user.trackedUrls);
       const {itemUrl} = this.itemUrlForm.value;
 
       if (!currentTrackedUrls.has(itemUrl)) {
         currentTrackedUrls.add(itemUrl);
-        userRef.update({trackedUrls: Array.from(currentTrackedUrls)});
+        this.auth.getUserRef(user.uid).update({trackedUrls: Array.from(currentTrackedUrls)});
         this.itemUrlForm.reset();
         this.notifications.show('Przedmiot został dodany do obserwowanych', {
           status: TuiNotification.Success
@@ -108,11 +126,22 @@ export class DashboardPageComponent extends BaseComponent implements OnInit {
       take(1),
       takeUntil(this.destroyed)
     ).subscribe((user: AppUser) => {
-      const userRef: AngularFirestoreDocument<AppUser> = this.firestore.doc(`users/${user.uid}`);
       const currentTrackedUrls = new Set(user.trackedUrls);
       currentTrackedUrls.delete(itemUrl);
-      userRef.update({trackedUrls: Array.from(currentTrackedUrls)});
+      this.auth.getUserRef(user.uid).update({trackedUrls: Array.from(currentTrackedUrls)});
       this.notifications.show('Przedmiot został usunięty z obserwowanych', {
+        status: TuiNotification.Success
+      }).subscribe();
+    });
+  }
+
+  public onNotificationsSettingsFormSubmit(): void {
+    this.auth.user.pipe(
+      take(1),
+      takeUntil(this.destroyed)
+    ).subscribe((user: AppUser) => {
+      this.auth.getUserRef(user.uid).update({notificationsSettings: this.notificationsSettingsForm.value});
+      this.notifications.show('Ustawienia powiadomień zostały zapisane', {
         status: TuiNotification.Success
       }).subscribe();
     });

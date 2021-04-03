@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable, of, Subscriber } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 import firebase from 'firebase';
 import User = firebase.User;
 import { AppUser } from '../../shared/interfaces/app-user.interface';
@@ -27,6 +27,10 @@ export class AuthService {
         }
       })
     );
+  }
+
+  public getUserRef(uid: string): AngularFirestoreDocument<AppUser> {
+    return this.firestore.doc(`users/${uid}`);
   }
 
   public async signInWithEmail(email: string, password: string): Promise<void> {

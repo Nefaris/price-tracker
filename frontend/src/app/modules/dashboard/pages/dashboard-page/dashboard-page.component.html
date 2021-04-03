@@ -1,4 +1,55 @@
 <div class="container py-5">
+  <div class="row">
+    <div class="col-12">
+      <p class="tui-text_h2">Ustawienia</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <p class="tui-text_h6">Ustawienia powiadomień</p>
+      <div class="row" *ngIf="auth.user | async">
+        <form class="col-12" [formGroup]="notificationsSettingsForm">
+          <div class="d-flex align-items-center tui-space_bottom-4">
+            <tui-toggle
+              class="flex-shrink-0"
+              formControlName="email"
+              size="l"
+              [showIcons]="true"
+            ></tui-toggle>
+            <span class="tui-space_left-3">Powiadomienia E-mail</span>
+          </div>
+
+          <div class="d-flex align-items-center tui-space_bottom-4">
+            <tui-toggle
+              class="flex-shrink-0"
+              formControlName="messenger"
+              size="l"
+              [showIcons]="true"
+            ></tui-toggle>
+            <span class="tui-space_left-3">Powiadomienia Messenger</span>
+          </div>
+
+          <div class="d-flex align-items-center tui-space_bottom-4">
+            <tui-toggle
+              class="flex-shrink-0"
+              formControlName="push"
+              size="l"
+              [showIcons]="true"
+            ></tui-toggle>
+            <span class="tui-space_left-3">Powiadomienia Push (dostępne tylko na Windows oraz MacOS)</span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row">
+    <div class="col-12">
+      <p class="tui-text_h2">Obserwowane przedmioty</p>
+    </div>
+  </div>
   <div class="row mb-4">
     <div class="col-12">
       <tui-toggle
