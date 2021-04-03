@@ -29,7 +29,16 @@
     <div class="col-12">
       <ng-container *ngIf="(auth.user | async) as user">
         <ng-container *ngFor="let url of user.trackedUrls">
-          <div class="py-2">
+          <div class="d-flex align-items-center py-2">
+            <button
+              tuiButton
+              type="button"
+              size="s"
+              class="tui-space_right-2"
+              (click)="onItemUrlRemove(url)"
+            >
+              Usuń
+            </button>
             <a tuiLink [href]="url" target="_blank">{{ url }}</a>
           </div>
         </ng-container>

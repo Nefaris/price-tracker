@@ -92,14 +92,29 @@ export class DashboardPageComponent extends BaseComponent implements OnInit {
         currentTrackedUrls.add(itemUrl);
         userRef.update({trackedUrls: Array.from(currentTrackedUrls)});
         this.itemUrlForm.reset();
-        this.notifications.show('Adres został dodany do śledzonych', {
+        this.notifications.show('Przedmiot został dodany do obserwowanych', {
           status: TuiNotification.Success
         }).subscribe();
       } else {
-        this.notifications.show('Podany adres jest już śledzony', {
+        this.notifications.show('Przedmiot jest już obserwowanych', {
           status: TuiNotification.Warning
         }).subscribe();
       }
+    });
+  }
+
+  public onItemUrlRemove(itemUrl: string): void {
+    this.auth.user.pipe(
+      take(1),
+      takeUntil(this.destroyed)
+    ).subscribe((user: AppUser) => {
+      const userRef: AngularFirestoreDocument<AppUser> = this.firestore.doc(`users/${user.uid}`);
+      const currentTrackedUrls = new Set(user.trackedUrls);
+      currentTrackedUrls.delete(itemUrl);
+      userRef.update({trackedUrls: Array.from(currentTrackedUrls)});
+      this.notifications.show('Przedmiot został usunięty z obserwowanych', {
+        status: TuiNotification.Success
+      }).subscribe();
     });
   }
 }
