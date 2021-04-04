@@ -15,7 +15,7 @@ import * as isEqual from 'lodash.isequal';
 })
 export class SettingsPageComponent extends BaseComponent implements OnInit {
   hasUnsavedProfileSettingsForm = false;
-  initialProfileSettingsFormValue: any;
+  defaultProfileSettingsFormValue: any;
   profileSettingsForm = this.fb.group({
     email: [false],
     messenger: [false],
@@ -26,7 +26,7 @@ export class SettingsPageComponent extends BaseComponent implements OnInit {
   });
 
   hasUnsavedCheckFrequencyForm = false;
-  initialCheckFrequencyFormValue: any;
+  defaultCheckFrequencyFormValue: any;
   checkFrequencyForm = this.fb.group({
     checkFrequency: [null, [Validators.required, Validators.min(30)]]
   });
@@ -45,24 +45,24 @@ export class SettingsPageComponent extends BaseComponent implements OnInit {
       takeUntil(this.destroyed)
     ).subscribe((user: AppUser) => {
       this.profileSettingsForm.patchValue(user.profileSettings, {emitEvent: false});
-      this.initialProfileSettingsFormValue = this.profileSettingsForm.value;
+      this.defaultProfileSettingsFormValue = this.profileSettingsForm.value;
     });
 
     this.checkFrequencyForm.patchValue({
       checkFrequency: Number(localStorage.getItem('checkFrequency')) ?? 30
     }, {emitEvent: false});
-    this.initialCheckFrequencyFormValue = this.checkFrequencyForm.value;
+    this.defaultCheckFrequencyFormValue = this.checkFrequencyForm.value;
 
     this.profileSettingsForm.valueChanges.pipe(
       takeUntil(this.destroyed)
     ).subscribe(() => {
-      this.hasUnsavedProfileSettingsForm = !isEqual(this.profileSettingsForm.value, this.initialProfileSettingsFormValue);
+      this.hasUnsavedProfileSettingsForm = !isEqual(this.profileSettingsForm.value, this.defaultProfileSettingsFormValue);
     });
 
     this.checkFrequencyForm.valueChanges.pipe(
       takeUntil(this.destroyed)
     ).subscribe(() => {
-      this.hasUnsavedCheckFrequencyForm = !isEqual(this.checkFrequencyForm.value, this.initialCheckFrequencyFormValue);
+      this.hasUnsavedCheckFrequencyForm = !isEqual(this.checkFrequencyForm.value, this.defaultCheckFrequencyFormValue);
     });
   }
 
@@ -72,6 +72,8 @@ export class SettingsPageComponent extends BaseComponent implements OnInit {
       takeUntil(this.destroyed)
     ).subscribe((user: AppUser) => {
       this.auth.getUserRef(user.uid).update({profileSettings: this.profileSettingsForm.value});
+      this.defaultProfileSettingsFormValue = this.profileSettingsForm.value;
+      this.hasUnsavedProfileSettingsForm = false;
       this.notifications.show('Ustawienia powiadomień zostały zapisane', {
         status: TuiNotification.Success
       }).subscribe();
@@ -80,6 +82,8 @@ export class SettingsPageComponent extends BaseComponent implements OnInit {
 
   public onCheckFrequencyFormSubmit(): void {
     localStorage.setItem('checkFrequency', this.checkFrequencyForm.get('checkFrequency').value);
+    this.defaultCheckFrequencyFormValue = this.checkFrequencyForm.value;
+    this.hasUnsavedCheckFrequencyForm = false;
     this.notifications.show('Ustawienia częstotliwości sprawdzania zostały zapisane', {
       status: TuiNotification.Success
     }).subscribe();
