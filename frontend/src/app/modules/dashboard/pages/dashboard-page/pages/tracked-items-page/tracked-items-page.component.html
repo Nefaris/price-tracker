@@ -34,21 +34,29 @@
     <p class="tui-text_h6">Lista obserwowanych</p>
     <p *ngIf="user.trackedItems.length === 0">Brak obserwowanych przedmiotów.</p>
     <ng-container *ngIf="user.trackedItems.length > 0">
-      <div class="d-flex align-items-center py-2" *ngFor="let item of user.trackedItems">
-        <button
-          tuiButton
-          type="button"
-          size="s"
-          class="tui-space_right-2"
-          (click)="onItemRemove(item)"
-        >
-          Usuń
-        </button>
-        <span class="tui-space_right-2">[{{ item.name }}]</span>
-        <a tuiLink [href]="item.url" target="_blank" title="Przejdź do strony przedmiotu">
-          {{ item.url }}
-          <tui-svg src="tuiIconArrowUpRight"></tui-svg>
-        </a>
+      <div class="d-flex flex-column flex-md-row align-items-md-center py-2 mb-4 mb-md-0" *ngFor="let item of user.trackedItems">
+        <div class="d-flex align-items-center mb-2 mb-md-0">
+          <button
+            tuiButton
+            type="button"
+            size="s"
+            class="tui-space_right-2"
+            (click)="onItemRemove(item)"
+          >
+            Usuń
+          </button>
+          <tui-badge
+            class="tui-space_right-2 flex-shrink-0"
+            [status]="item.isAvailable ? 'success' : 'error'"
+            [value]="item.isAvailable ? 'Dostępny' : 'Niedostępny'"
+          ></tui-badge>
+        </div>
+        <div>
+          <span class="tui-space_right-2">[{{ item.name }}]</span>
+          <a tuiLink [href]="item.url" target="_blank" title="Przejdź do strony przedmiotu">
+            {{ item.url }}
+          </a>
+        </div>
       </div>
     </ng-container>
   </div>

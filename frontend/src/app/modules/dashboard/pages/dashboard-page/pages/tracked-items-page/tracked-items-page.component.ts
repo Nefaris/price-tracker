@@ -40,7 +40,9 @@ export class TrackedItemsPageComponent extends BaseComponent {
       take(1),
       takeUntil(this.destroyed)
     ).subscribe((user: AppUser) => {
-      this.auth.getUserRef(user.uid).update({trackedItems: [...user.trackedItems, {...this.itemForm.value, id: uuidv4()}]});
+      this.auth.getUserRef(user.uid).update({
+        trackedItems: [...user.trackedItems, {...this.itemForm.value, id: uuidv4(), notified: false, isAvailable: false}]
+      });
       this.notifications.show(`Przedmiot: ${this.itemForm.get('name').value} został dodany do obserwowanych`, {
         status: TuiNotification.Success
       }).subscribe();
