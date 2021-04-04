@@ -5,92 +5,106 @@
 </div>
 
 <div class="row" *ngIf="auth.user | async">
-  <div class="col-12">
-    <div class="row tui-space_bottom-10">
-      <tui-island>
-        <form class="col-12" [formGroup]="profileSettingsForm" (submit)="onNotificationsSettingsFormSubmit()">
-          <div class="tui-space_bottom-10">
-            <p class="tui-text_h6 tui-space_top-0">Powiadomienia</p>
-            <div class="d-flex align-items-center mb-3">
-              <tui-toggle
-                class="flex-shrink-0"
-                formControlName="email"
-                size="l"
-                [showIcons]="true"
-              ></tui-toggle>
-              <span class="tui-space_left-3">Powiadomienia E-mail</span>
-            </div>
-
-            <div class="d-flex align-items-center mb-3">
-              <tui-toggle
-                class="flex-shrink-0"
-                formControlName="messenger"
-                size="l"
-                [showIcons]="true"
-              ></tui-toggle>
-              <span class="tui-space_left-3">Powiadomienia Messenger</span>
-            </div>
-
-            <div class="d-flex align-items-center mb-3">
-              <tui-toggle
-                class="flex-shrink-0"
-                formControlName="push"
-                size="l"
-                [showIcons]="true"
-              ></tui-toggle>
-              <span class="tui-space_left-3">Powiadomienia Push (dostępne tylko na Windows oraz MacOS)</span>
-            </div>
+  <div class="col-12 tui-space_bottom-10">
+    <tui-island>
+      <form [formGroup]="profileSettingsForm" (submit)="onNotificationsSettingsFormSubmit()">
+        <div class="tui-space_bottom-10">
+          <p class="tui-text_h6 tui-space_top-0">Powiadomienia</p>
+          <div class="d-flex align-items-center mb-3">
+            <tui-toggle
+              class="flex-shrink-0"
+              formControlName="email"
+              size="l"
+              [showIcons]="true"
+            ></tui-toggle>
+            <span class="tui-space_left-3">Powiadomienia E-mail</span>
           </div>
 
-          <div class="tui-space_bottom-10">
-            <p class="tui-text_h6">Adresy powiadomień</p>
-
-            <label
-              tuiLabel
-              label="Jeśli powiadomienia e-mail są włączone, podaj adres e-mail na który chcesz otrzymywać powiadomienia."
-            >
-              <tui-input class="mb-3" formControlName="notificationsEmail">
-                Adres e-mail
-              </tui-input>
-            </label>
-
-
-            <label
-              tuiLabel
-              label="Jeśli powiadomienia messenger są włączone, podaj adres konta na który chcesz otrzymywać powiadomienia."
-            >
-              <tui-input class="mb-3" formControlName="notificationsMessenger">
-                Adres konta messenger
-              </tui-input>
-            </label>
+          <div class="d-flex align-items-center mb-3">
+            <tui-toggle
+              class="flex-shrink-0"
+              formControlName="messenger"
+              size="l"
+              [showIcons]="true"
+            ></tui-toggle>
+            <span class="tui-space_left-3">Powiadomienia Messenger</span>
           </div>
 
+          <div class="d-flex align-items-center mb-3">
+            <tui-toggle
+              class="flex-shrink-0"
+              formControlName="push"
+              size="l"
+              [showIcons]="true"
+            ></tui-toggle>
+            <span class="tui-space_left-3">Powiadomienia Push (dostępne tylko na Windows oraz MacOS)</span>
+          </div>
+        </div>
+
+        <div class="tui-space_bottom-10">
+          <p class="tui-text_h6">Adresy powiadomień</p>
+
+          <ng-template #notificationsEmailLabel>
+            Jeśli powiadomienia e-mail są włączone, podaj adres e-mail na który chcesz otrzymywać powiadomienia.
+          </ng-template>
+          <label tuiLabel [label]="notificationsEmailLabel">
+            <tui-input class="mb-3 mt-1" formControlName="notificationsEmail">
+              Adres e-mail
+            </tui-input>
+          </label>
+
+          <ng-template #notificationsMessengerLabel>
+            Żeby otrzymywać powiadomienia messenger, musisz wypełnić to pole. Aby uzyskać swoje ID odbiorcy przejdź pod adres <a tuiLink href="https://www.facebook.com/Lotier-101778388692725" target="_blank">https://www.facebook.com/Lotier-101778388692725</a> oraz wyślij wiadomość o treści: "id". W odpowiedzi otrzymasz swój kod odbiorcy. Otrzymany kod wpisz poniżej.
+          </ng-template>
+          <label tuiLabel [label]="notificationsMessengerLabel">
+            <tui-input class="mb-3 mt-1" formControlName="notificationsMessenger">
+              ID odbiorcy messenger
+            </tui-input>
+          </label>
+        </div>
+
+
+        <div class="d-flex flex-column align-items-start">
+          <tui-badge
+            *ngIf="hasUnsavedProfileSettingsForm"
+            class="mb-2"
+            status="warning"
+            value="Uwaga, posiadasz niezapisane zmiany"
+          ></tui-badge>
           <button
             tuiButton
             type="submit"
           >
             Zapisz ustawienia powiadomień
           </button>
-        </form>
-      </tui-island>
-    </div>
+        </div>
+      </form>
+    </tui-island>
+  </div>
 
-    <div class="row tui-space_bottom-10">
-      <tui-island>
-        <form class="col-12" [formGroup]="checkFrequencyForm" (submit)="onCheckFrequencyFormSubmit()">
-          <div class="tui-space_bottom-10">
-            <p class="tui-text_h6 tui-space_top-0">Częstotliwość sprawdzania</p>
+  <div class="col-12 tui-space_bottom-10">
+    <tui-island>
+      <form [formGroup]="checkFrequencyForm" (submit)="onCheckFrequencyFormSubmit()">
+        <div class="tui-space_bottom-10">
+          <p class="tui-text_h6 tui-space_top-0">Częstotliwość sprawdzania</p>
 
-            <label
-              tuiLabel
-              label="Podaj częstotliwość sprawdzania produktów, wartość w sekudnach (minimum 30s)."
-            >
-              <tui-input-number class="mb-3" postfix="s" min="30" formControlName="checkFrequency">
-                Częstotliwość<span class="tui-required"></span>
-              </tui-input-number>
-            </label>
-          </div>
+          <ng-template #checkFrequencyLabel>
+            Podaj częstotliwość sprawdzania produktów, wartość w sekundach (minimum 30s).
+          </ng-template>
+          <label tuiLabel [label]="checkFrequencyLabel">
+            <tui-input-number class="mb-3 mt-1" postfix="s" min="30" formControlName="checkFrequency">
+              Częstotliwość<span class="tui-required"></span>
+            </tui-input-number>
+          </label>
+        </div>
 
+        <div class="d-flex flex-column align-items-start">
+          <tui-badge
+            *ngIf="hasUnsavedCheckFrequencyForm"
+            class="mb-2"
+            status="warning"
+            value="Uwaga, posiadasz niezapisane zmiany"
+          ></tui-badge>
           <button
             tuiButton
             type="submit"
@@ -98,8 +112,8 @@
           >
             Zapisz ustawienia sprawdzania
           </button>
-        </form>
-      </tui-island>
-    </div>
+        </div>
+      </form>
+    </tui-island>
   </div>
 </div>

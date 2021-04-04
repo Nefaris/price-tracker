@@ -5,6 +5,7 @@ import { take, takeUntil } from 'rxjs/operators';
 import { AppUser } from '../../../../../../shared/interfaces/app-user.interface';
 import { AuthService } from '../../../../../../core/services/auth.service';
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
+import * as isEqual from 'lodash.isequal';
 
 
 @Component({
@@ -13,6 +14,8 @@ import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
   styleUrls: ['./settings-page.component.scss']
 })
 export class SettingsPageComponent extends BaseComponent implements OnInit {
+  hasUnsavedProfileSettingsForm = false;
+  initialProfileSettingsFormValue: any;
   profileSettingsForm = this.fb.group({
     email: [false],
     messenger: [false],
@@ -22,6 +25,8 @@ export class SettingsPageComponent extends BaseComponent implements OnInit {
     notificationsMessenger: ['']
   });
 
+  hasUnsavedCheckFrequencyForm = false;
+  initialCheckFrequencyFormValue: any;
   checkFrequencyForm = this.fb.group({
     checkFrequency: [null, [Validators.required, Validators.min(30)]]
   });
@@ -39,11 +44,25 @@ export class SettingsPageComponent extends BaseComponent implements OnInit {
       take(1),
       takeUntil(this.destroyed)
     ).subscribe((user: AppUser) => {
-      this.profileSettingsForm.patchValue(user.profileSettings);
+      this.profileSettingsForm.patchValue(user.profileSettings, {emitEvent: false});
+      this.initialProfileSettingsFormValue = this.profileSettingsForm.value;
     });
 
     this.checkFrequencyForm.patchValue({
-      checkFrequency: localStorage.getItem('checkFrequency') ?? 30
+      checkFrequency: Number(localStorage.getItem('checkFrequency')) ?? 30
+    }, {emitEvent: false});
+    this.initialCheckFrequencyFormValue = this.checkFrequencyForm.value;
+
+    this.profileSettingsForm.valueChanges.pipe(
+      takeUntil(this.destroyed)
+    ).subscribe(() => {
+      this.hasUnsavedProfileSettingsForm = !isEqual(this.profileSettingsForm.value, this.initialProfileSettingsFormValue);
+    });
+
+    this.checkFrequencyForm.valueChanges.pipe(
+      takeUntil(this.destroyed)
+    ).subscribe(() => {
+      this.hasUnsavedCheckFrequencyForm = !isEqual(this.checkFrequencyForm.value, this.initialCheckFrequencyFormValue);
     });
   }
 

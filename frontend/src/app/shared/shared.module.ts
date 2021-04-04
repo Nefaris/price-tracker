@@ -8,7 +8,7 @@ import {
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
 import {
-  TuiAvatarModule,
+  TuiAvatarModule, TuiBadgeModule,
   TuiFieldErrorModule,
   TuiInputModule, TuiInputNumberModule,
   TuiInputPasswordModule,
@@ -39,7 +39,8 @@ const SHARED_MODULES = [
   TuiTabsModule,
   TuiSvgModule,
   TuiLabelModule,
-  TuiInputNumberModule
+  TuiInputNumberModule,
+  TuiBadgeModule
 ];
 
 @NgModule({
