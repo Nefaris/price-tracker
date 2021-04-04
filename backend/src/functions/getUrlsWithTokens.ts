@@ -9,14 +9,15 @@ const getTrackedUrls = async (): Promise<TrackedUrls> => {
     const users = await snap.docs.map(doc => doc.data());
 
     for (const user of users) {
-        const { push, email, messenger, notificationsEmail } = user.profileSettings;
+        const { push, email, messenger, notificationsEmail, notificationsMessenger } = user.profileSettings;
 
         if (user.trackedItems) {
             for (const { url } of user.trackedItems) {
                 if (!allTrackedUrls[url]) {
                     allTrackedUrls[url] = {
                         pushTokens: [],
-                        emails: []
+                        emails: [],
+                        messengerPsids: []
                     }
                 }
                 if (push && user.notificationTokens) {
@@ -26,6 +27,10 @@ const getTrackedUrls = async (): Promise<TrackedUrls> => {
 
                 if (email && emailRegex.test(notificationsEmail)) {
                     allTrackedUrls[url].emails.push(notificationsEmail);
+                }
+
+                if (messenger && notificationsMessenger) {
+                    allTrackedUrls[url].messengerPsids.push(notificationsMessenger)
                 }
             }
         }

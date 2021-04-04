@@ -3,11 +3,13 @@ export type Item = {
     img: string;
     available: boolean;
     url: string;
+    title: string;
 }
 
 export type TrackedUrls = Record<string, {
     pushTokens: string[],
-    emails: string[]
+    emails: string[],
+    messengerPsids: string[],
 }>
 
 // ;

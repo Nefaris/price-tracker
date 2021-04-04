@@ -5,14 +5,16 @@
             "ctaButtonClass": ".sc-1smss4h-5",
             "priceButtonClass": ".u7xnnm-4",
             "unavailiableText": "Powiadom o dostępności",
-            "imageClass": ".sc-1e853jq-4 img"
+            "imageClass": ".sc-1e853jq-4 img",
+            "titleClass": ".fiaogA"
         },
         {
             "name": "morele",
             "ctaButtonClass": ".product-box-main__add-to-cart button",
             "priceButtonClass": ".product-price",
             "unavailiableText": "PRODUKT NIEDOSTĘPNY",
-            "imageClass": ".prod-gallery img"
+            "imageClass": ".prod-gallery img",
+            "titleClass": ".prod-name"
         }
     ]
 }
