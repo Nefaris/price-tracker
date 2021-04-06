@@ -50,15 +50,15 @@ export class AuthService {
     const data = {
       uid,
       email,
-      ...!user.data()?.trackedItems && {trackedItems: []},
-      ...!user.data()?.notificationTokens && {notificationTokens: []},
+      ...!('trackedItems' in user.data()) && {trackedItems: []},
+      ...!('notificationTokens' in user.data()) && {notificationTokens: []},
       profileSettings: {
-        ...!user.data()?.profileSettings.email && {email: true},
-        ...!user.data()?.profileSettings.messenger && {messenger: true},
-        ...!user.data()?.profileSettings.email && {push: true},
-        ...!user.data()?.profileSettings.email && {darkTheme: true},
-        ...!user.data()?.profileSettings.email && {notificationsEmail: ''},
-        ...!user.data()?.profileSettings.email && {notificationsMessenger: ''}
+        ...!('email' in user.data()?.profileSettings) && {email: true},
+        ...!('messenger' in user.data()?.profileSettings) && {messenger: true},
+        ...!('push' in user.data()?.profileSettings) && {push: true},
+        ...!('darkTheme' in user.data()?.profileSettings) && {darkTheme: true},
+        ...!('notificationsEmail' in user.data()?.profileSettings) && {notificationsEmail: ''},
+        ...!('notificationsMessenger' in user.data()?.profileSettings) && {notificationsMessenger: ''}
       }
     } as AppUser;
 
