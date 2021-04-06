@@ -30,7 +30,7 @@ app.post('/changeInterval', (req, res) => {
         return;
     }
 
-    scheduler.scheduleJob(time, scrapeAndNotify)
+    scheduler.scheduleJob(time * 1000, scrapeAndNotify)
     res.status(200);
     res.send("OK");
 })
