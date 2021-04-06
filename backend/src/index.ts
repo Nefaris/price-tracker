@@ -8,6 +8,7 @@ import scrapeAndNotify from './functions/scrapeAndNotify';
 const serviceAccount = require("../serviceAccountKey.json");
 const scheduler = new Scheduler();
 const app = express();
+app.use(express.json());
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
@@ -28,5 +29,8 @@ app.post('/changeInterval', (req, res) => {
         res.status(400);
         return;
     }
+
     scheduler.scheduleJob(time, scrapeAndNotify)
+    res.status(200);
+    res.send("OK");
 })
