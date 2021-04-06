@@ -1,7 +1,7 @@
 import { messaging } from "../index";
 import { Item } from "../types";
 
-export const sendPushNotifications = (pushTokens: string[], item: Item, url: string) => {
+export const sendPushNotifications = (pushTokens: string[], item: Item) => {
     if (!pushTokens.length) return;
 
     const message = {
@@ -9,7 +9,7 @@ export const sendPushNotifications = (pushTokens: string[], item: Item, url: str
         data: {
             "title": "Dostępny przedmiot!",
             "body": `Cena: ${item.price}`,
-            "click_action": url,
+            "click_action": item.url,
             "icon": item.img ?? '',
             "image": item.img ?? '',
         }

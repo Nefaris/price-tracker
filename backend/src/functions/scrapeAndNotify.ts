@@ -19,10 +19,13 @@ const scrapeAndNotify = async () => {
         const { pushTokens, emails, messengerPsids } = allTrackedUrls[url];
         const item = scrapedItems.find(item => item.url === url);
 
+        console.log(item);
+
         if (item.available) {
-            sendEmails(emails, `Cena: ${item.price} <img src="${item.img}" />`)
+            console.log('available');
+            sendEmails(emails, item)
             sendMessengerMessages(messengerPsids, item)
-            sendPushNotifications(pushTokens, item, url);
+            sendPushNotifications(pushTokens, item);
         };
 
         for (const user of usersSnap) {

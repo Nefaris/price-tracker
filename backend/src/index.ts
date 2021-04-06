@@ -19,7 +19,7 @@ export const firestore = admin.firestore();
 export const messaging = admin.messaging();
 
 app.listen(3000);
-scheduler.scheduleJob(30000, scrapeAndNotify)
+scheduler.scheduleJob(10 * 1000, scrapeAndNotify)
 
 
 app.post('/changeInterval', (req, res) => {
