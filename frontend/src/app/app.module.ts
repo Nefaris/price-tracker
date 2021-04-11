@@ -17,6 +17,7 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     TuiRootModule,
     TuiThemeNightModule,
     TuiModeModule,

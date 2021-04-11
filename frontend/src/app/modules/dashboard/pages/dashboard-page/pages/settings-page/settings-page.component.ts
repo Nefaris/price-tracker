@@ -6,6 +6,8 @@ import { AppUser } from '../../../../../../shared/interfaces/app-user.interface'
 import { AuthService } from '../../../../../../core/services/auth.service';
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
 import * as isEqual from 'lodash.isequal';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../../../environments/environment';
 
 
 @Component({
@@ -34,7 +36,8 @@ export class SettingsPageComponent extends BaseComponent implements OnInit {
   constructor(
     public readonly auth: AuthService,
     private readonly fb: FormBuilder,
-    private readonly notifications: TuiNotificationsService
+    private readonly notifications: TuiNotificationsService,
+    private readonly http: HttpClient
   ) {
     super();
   }
@@ -48,10 +51,18 @@ export class SettingsPageComponent extends BaseComponent implements OnInit {
       this.defaultProfileSettingsFormValue = this.profileSettingsForm.value;
     });
 
-    this.checkFrequencyForm.patchValue({
-      checkFrequency: Number(localStorage.getItem('checkFrequency')) ?? 30
-    }, {emitEvent: false});
-    this.defaultCheckFrequencyFormValue = this.checkFrequencyForm.value;
+    this.http.get(environment.checkFrequencyEndpoint).pipe(
+      takeUntil(this.destroyed)
+    ).subscribe((time: number) => {
+      this.checkFrequencyForm.patchValue({
+        checkFrequency: time
+      }, {emitEvent: false});
+      this.defaultCheckFrequencyFormValue = this.checkFrequencyForm.value;
+    }, () => {
+      this.notifications.show('Wystąpił błąd poczas próby pobrania aktualnej częstotliwości odświeżania', {
+        status: TuiNotification.Error
+      }).subscribe();
+    });
 
     this.profileSettingsForm.valueChanges.pipe(
       takeUntil(this.destroyed)
@@ -81,11 +92,16 @@ export class SettingsPageComponent extends BaseComponent implements OnInit {
   }
 
   public onCheckFrequencyFormSubmit(): void {
-    localStorage.setItem('checkFrequency', this.checkFrequencyForm.get('checkFrequency').value);
-    this.defaultCheckFrequencyFormValue = this.checkFrequencyForm.value;
-    this.hasUnsavedCheckFrequencyForm = false;
-    this.notifications.show('Ustawienia częstotliwości sprawdzania zostały zapisane', {
-      status: TuiNotification.Success
-    }).subscribe();
+    this.http.post(environment.checkFrequencyEndpoint, {time: this.checkFrequencyForm.get('checkFrequency').value}).subscribe(() => {
+      this.defaultCheckFrequencyFormValue = this.checkFrequencyForm.value;
+      this.hasUnsavedCheckFrequencyForm = false;
+      this.notifications.show('Ustawienia częstotliwości sprawdzania zostały zapisane', {
+        status: TuiNotification.Success
+      }).subscribe();
+    }, () => {
+      this.notifications.show('Wystpąpił błąd podczas próby zmiany częstotliwości sprawdzania', {
+        status: TuiNotification.Error
+      }).subscribe();
+    });
   }
 }

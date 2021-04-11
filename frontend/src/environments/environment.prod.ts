@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  checkFrequencyEndpoint: '',
   firebaseConfig: {
     apiKey: 'AIzaSyBTGYazxJR65FAMkW5WD1iXioQMaoME0vM',
     authDomain: 'lotier-1c4bd.firebaseapp.com',

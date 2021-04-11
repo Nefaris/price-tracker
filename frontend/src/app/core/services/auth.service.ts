@@ -47,21 +47,25 @@ export class AuthService {
     const userRef: AngularFirestoreDocument<AppUser> = this.firestore.doc(`users/${uid}`);
     const user = await userRef.get().toPromise();
 
-    const data = {
-      uid,
-      email,
-      ...!('trackedItems' in user.data()) && {trackedItems: []},
-      ...!('notificationTokens' in user.data()) && {notificationTokens: []},
-      profileSettings: {
-        ...!('email' in user.data()?.profileSettings) && {email: true},
-        ...!('messenger' in user.data()?.profileSettings) && {messenger: true},
-        ...!('push' in user.data()?.profileSettings) && {push: true},
-        ...!('darkTheme' in user.data()?.profileSettings) && {darkTheme: true},
-        ...!('notificationsEmail' in user.data()?.profileSettings) && {notificationsEmail: ''},
-        ...!('notificationsMessenger' in user.data()?.profileSettings) && {notificationsMessenger: ''}
-      }
-    } as AppUser;
+    if (!user.exists) {
+      const data = {
+        uid,
+        email,
+        trackedItems: [],
+        notificationTokens: [],
+        profileSettings: {
+          email: true,
+          messenger: true,
+          push: true,
+          darkTheme: true,
+          notificationsEmail: '',
+          notificationsMessenger: ''
+        }
+      } as AppUser;
 
-    return userRef.set(data, {merge: true});
+      return userRef.set(data, {merge: true});
+    }
+
+    return null;
   }
 }
