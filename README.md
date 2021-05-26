@@ -15,21 +15,21 @@ Run PWA live version: `live:prod`
 
 ## Technologies
 #### Frontend
-Angular 11
-Firebase
-FireAuth
-Firestore
-AngularFire
-Taiga UI
+Angular 11  
+Firebase  
+FireAuth  
+Firestore  
+AngularFire  
+Taiga UI  
 
 #### Backend
-Node.js
-Express
-Webhooks
-Cheerio
-Axios
-Typescript
-Node-mailer
+Node.js  
+Express  
+Webhooks  
+Cheerio  
+Axios  
+Typescript  
+Node-mailer  
 
 ## Screenshots
 
